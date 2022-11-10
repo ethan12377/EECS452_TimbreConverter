@@ -90,6 +90,6 @@ for i in range(num_clips):
 
     if i != num_clips-1: file.write("},\n")
     else: file.write("}\n")
-file.write("}")
+file.write("};")
 
 file.close()
