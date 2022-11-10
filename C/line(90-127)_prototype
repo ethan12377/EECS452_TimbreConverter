@@ -26,28 +26,28 @@ double complex * reconstruct_sound(){
         else if (input_main_freq[i] >= A1_freq && input_main_freq[i] < A2_freq){
             ratio1 = (A2_freq - input_main_freq[i]) / (A2_freq - A1_freq);
             ratio2 = (input_main_freq[i] - A1_freq) / (A2_freq - A1_freq);
-            for (j = 0; j < peak_length; j++){
+            for(int j = 0; j < peak_length; j++){
                 peak[i] = ratio1 * A1_peaks[i] + ratio2 * A2_peaks[i];
             }
         }
         else if (input_main_freq[i] >= A2_freq && input_main_freq[i] < A3_freq){
             ratio1 = (A3_freq - input_main_freq[i]) / (A3_freq - A2_freq);
             ratio2 = (input_main_freq[i] - A2_freq) / (A3_freq - A2_freq);
-            for (j = 0; j < peak_length; j++){
+            for(int j = 0; j < peak_length; j++){
                 peak[i] = ratio1 * A2_peaks[i] + ratio2 * A3_peaks[i];
             }
         }
         else if (input_main_freq[i] >= A3_freq && input_main_freq[i] < A4_freq){
             ratio1 = (A4_freq - input_main_freq[i]) / (A4_freq - A3_freq);
             ratio2 = (input_main_freq[i] - A3_freq) / (A4_freq - A3_freq);
-            for (j = 0; j < peak_length; j++){
+            for(int j = 0; j < peak_length; j++){
                 peak[i] = ratio1 * A3_peaks[i] + ratio2 * A4_peaks[i];
             }
         }
         else if (input_main_freq[i] >= A4_freq && input_main_freq[i] < A5_freq){
             ratio1 = (A5_freq - input_main_freq[i]) / (A5_freq - A4_freq);
             ratio2 = (input_main_freq[i] - A4_freq) / (A5_freq - A4_freq);
-            for (j = 0; j < peak_length; j++){
+            for(int j = 0; j < peak_length; j++){
                 peak[i] = ratio1 * A4_peaks[i] + ratio2 * A5_peaks[i];
             }
         }
@@ -59,8 +59,8 @@ double complex * reconstruct_sound(){
     prev_freq = input_main_freq[i]
 
     int main_freq_index = int(output_freq / freq_per_sam);
-    for (i = 0; i < harmonic_numl; i++){
-        for (j = (main_freq_index-half_width)*(i+1); j < (main_freq_index+half_width)*(i+1); j++){
+    for (int i = 0; i < harmonic_numl; i++){
+        for (int j = (main_freq_index-half_width)*(i+1); j < (main_freq_index+half_width)*(i+1); j++){
             output_spectrum[j] = peaks[counter][i][j-(main_freq_index-half_width)*(i+1)];
         }
     }
