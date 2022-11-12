@@ -31,15 +31,9 @@ void setup() {
   audioShield.inputSelect(myInput);
   audioShield.volume(0.5);
 
-  // Configure the window algorithm to use
-  myFFT.windowFunction(AudioWindowHanning1024);
-  myIFFT.windowFunction(AudioWindowHanning1024);
-  //myFFT.windowFunction(NULL);
-
   printf("setup done\n"); fflush(stdout);
 }
 
-void loop()
-{
+void loop(){
   
 }
