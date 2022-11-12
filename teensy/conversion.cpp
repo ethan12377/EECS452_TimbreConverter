@@ -33,8 +33,8 @@ uint16_t find_main_freq(float * FFT_array){
 void get_peaks(double complex peak[][harmonic_num][third_arg], uint16_t curr_main_frequency) {
     double ratio1 = 1;
     double ratio2 = 0;
-    double complex *** left;
-    double complex *** right;
+    double complex (*left)[harmonic_num][third_arg];
+    double complex (*right)[harmonic_num][third_arg];
 
     if (curr_main_frequency < A1_freq)
         left = right = A1_peaks;
