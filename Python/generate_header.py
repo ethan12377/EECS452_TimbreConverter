@@ -86,7 +86,7 @@ for peak_index in range(len(peak_list)):
         for j in range(harmonic_num):
             file.write("{")
             for k in range(max_window_size):
-                file.write(str(A1_peaks[i][j][k].real) + "," + str(A1_peaks[i][j][k].imag))
+                file.write(str(peak_list[peak_index][i][j][k].real) + "," + str(peak_list[peak_index][i][j][k].imag))
                 if k != max_window_size-1: file.write(",")
 
             if j != harmonic_num-1: file.write("},\n")
