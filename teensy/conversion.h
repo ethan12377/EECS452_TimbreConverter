@@ -2,7 +2,6 @@
 #define conversion_h
 
 #include <stdint.h>
-#include <complex.h>
 #include "freq.h"
 
 /*
@@ -24,7 +23,7 @@
 void timbre_convert(float*);
 
 uint16_t find_main_freq(float *);
-void get_peaks(double complex [][harmonic_num][third_arg], uint16_t);
-void reconstruct(double complex [][harmonic_num][third_arg], float*, uint16_t, uint16_t);
+void get_peaks(double [][harmonic_num][max_window_size*2], uint16_t);
+void reconstruct(double [][harmonic_num][max_window_size*2], float*, uint16_t, uint16_t);
 
 #endif

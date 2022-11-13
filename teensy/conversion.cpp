@@ -4,7 +4,7 @@ void timbre_convert(float* FFT_array) {
     uint16_t clip_counter = 0;
     uint16_t prev_main_frequency = 0;
     uint16_t curr_main_frequency = 0;
-    double complex peak[num_clips][harmonic_num][third_arg];
+    double peak[num_clips][harmonic_num][max_window_size*2];
 
     // find main frequency
     curr_main_frequency = find_main_freq(FFT_array);
@@ -27,14 +27,14 @@ void timbre_convert(float* FFT_array) {
 }
 
 uint16_t find_main_freq(float * FFT_array){
-
+    return 100;
 }
 
-void get_peaks(double complex peak[][harmonic_num][third_arg], uint16_t curr_main_frequency) {
+void get_peaks(double peak[][harmonic_num][max_window_size*2], uint16_t curr_main_frequency) {
     double ratio1 = 1;
     double ratio2 = 0;
-    double complex (*left)[harmonic_num][third_arg];
-    double complex (*right)[harmonic_num][third_arg];
+    const double (*left)[harmonic_num][max_window_size*2];
+    const double (*right)[harmonic_num][max_window_size*2];
 
     if (curr_main_frequency < A1_freq)
         left = right = A1_peaks;
@@ -63,7 +63,7 @@ void get_peaks(double complex peak[][harmonic_num][third_arg], uint16_t curr_mai
 
     for(int i=0; i<num_clips; i++){
         for(int j=0; j<harmonic_num; j++){
-            for(int k=0; k<third_arg; k++){
+            for(int k=0; k<max_window_size*2; k++){
                 if(left == right){
                     peak[i][j][k] = left[i][j][k];
                 }else{
@@ -74,15 +74,14 @@ void get_peaks(double complex peak[][harmonic_num][third_arg], uint16_t curr_mai
     }
 }
 
-void reconstruct(double complex peak[][harmonic_num][third_arg], float* FFT_array, uint16_t clip_counter, uint16_t main_index){
+void reconstruct(double peak[][harmonic_num][max_window_size*2], float* FFT_array, uint16_t clip_counter, uint16_t main_index){
     // clear the array for output
     for(uint16_t i=0; i<process_size; i++)
         FFT_array[i] = 0;
     
     for(uint16_t i=0; i<harmonic_num; i++){ // harmonic number
         for(uint16_t j=0; j<half_window_size*2*i; j++){ // window size
-            FFT_array[(main_index - half_window_size)*(i+1) + j] = creal(peak[clip_counter][i][j]);
-            FFT_array[(main_index - half_window_size)*(i+1) + j + 1] = cimag(peak[clip_counter][i][j]);
+            FFT_array[(main_index - half_window_size)*(i+1) + j] = (peak[clip_counter][i][j]);
         }
     }
 }

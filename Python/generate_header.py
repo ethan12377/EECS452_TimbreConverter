@@ -59,12 +59,13 @@ for i in range(num_clips):
     A5_peaks[i] = get_model(A5[i], A5_freq, harmonic_num)
 
 # Write the initial part of the header file
+max_window_size = 2*half_width*harmonic_num
 initial_header_text = \
-"#include <complex.h>\n\n" + \
-"#define num_clips " + str(num_clips) + "\n" + \
-"#define harmonic_num " + str(harmonic_num) + "\n" + \
-"#define third_arg " + str(2*half_width*harmonic_num) + "\n\n" + \
-"const double complex A1_peaks[num_clips][harmonic_num][third_arg] = {\n"
+    "#ifndef freq_h\n" + \
+    "#define freq_h\n\n" + \
+    "#define num_clips " + str(num_clips) + "\n" + \
+    "#define harmonic_num " + str(harmonic_num) + "\n" + \
+    "#define max_window_size " + str(max_window_size) + "\n\n"
 
 # Reset the file for appending
 file = open("freq.h", "w")
@@ -75,21 +76,26 @@ file.close()
 file = open("freq.h", "a")
 file.write(initial_header_text)
 
-arg_three = 2*half_width*harmonic_num
+peak_list = [A1_peaks, A2_peaks, A3_peaks, A4_peaks, A5_peaks]
 
-for i in range(num_clips):
-    file.write("{")
-    for j in range(harmonic_num):
-        file.write("{")
-        for k in range(arg_three):
-            file.write(str(A1_peaks[i][j][k].real) + "+" + str(A1_peaks[i][j][k].imag) + "i")
-            if k != arg_three-1: file.write(",")
+for peak_index in range(len(peak_list)):
+    file.write("const double A%d_peaks[num_clips][harmonic_num][max_window_size*2] = {\n" % (peak_index + 1))
 
-        if j != harmonic_num-1: file.write("},\n")
+    for i in range(num_clips):
+        file.write("{\n")
+        for j in range(harmonic_num):
+            file.write("{")
+            for k in range(max_window_size):
+                file.write(str(A1_peaks[i][j][k].real) + "," + str(A1_peaks[i][j][k].imag))
+                if k != max_window_size-1: file.write(",")
+
+            if j != harmonic_num-1: file.write("},\n")
+            else: file.write("}\n")
+
+        if i != num_clips-1: file.write("},\n")
         else: file.write("}\n")
 
-    if i != num_clips-1: file.write("},\n")
-    else: file.write("}\n")
-file.write("};")
+    file.write("};\n\n")
 
+file.write("#endif")
 file.close()
