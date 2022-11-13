@@ -1,13 +1,16 @@
 #include "conversion.h"
 
-void timbre_convert(float* FFT_array) {
+void timbre_convert(float* FFT_array, int length) {
     uint16_t clip_counter = 0;
     uint16_t prev_main_frequency = 0;
     uint16_t curr_main_frequency = 0;
+
+	// TODO this should be dynamic memory so we can pass a ptr to get_peaks instead of
+	// an entire 3d array
     double peak[num_clips][harmonic_num][max_window_size*2];
 
     // find main frequency
-    curr_main_frequency = find_main_freq(FFT_array);
+    curr_main_frequency = find_main_freq(FFT_array, length);
 
     // determins the 16 clips of peaks that gonna be used based on main
     // freqeuncy, stored in 3D array peak
@@ -26,8 +29,37 @@ void timbre_convert(float* FFT_array) {
     reconstruct(peak, FFT_array, clip_counter, main_index);
 }
 
-uint16_t find_main_freq(float * FFT_array){
-    return 100;
+uint16_t find_main_freq(float * FFT_array, int length){
+	// Step 1: find the max value bin
+	int max_index = 0;
+	float max_value = 0;
+	int first_index = 0;
+
+	float bin_value;
+	for (int i = 0; i < length; i++) {
+		bin_value = FFT_array[i];
+		if (bin_value > max_value) {
+			max_value = bin_value;
+			max_index = i;
+		}
+	}
+
+	// This will calculate the first peak in the array rather than the largest
+	// float prev_bin_value, current_bin_value;
+	// for (int i = 1; i < length; i++) {
+		// prev_bin_value = FFT_array[i-1];
+		// current_bin_value = FFT_array[i];
+ 
+		// if (prev_bin_value > current_bin_value) {
+			// first_index = i - 1;
+		// }
+	// }
+
+	// Step 2: calculate freq based on bin and array size
+	uint16_t freq = (uint16_t) max_index * sample_rate / (float)length;
+
+	// Step 3: return freq
+    return freq;
 }
 
 void get_peaks(double peak[][harmonic_num][max_window_size*2], uint16_t curr_main_frequency) {
