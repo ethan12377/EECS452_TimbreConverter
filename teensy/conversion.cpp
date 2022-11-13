@@ -1,13 +1,13 @@
 #include "conversion.h"
 
-void timbre_convert(float* FFT_array) {
+void timbre_convert(float FFT_array[]) {
     uint16_t clip_counter = 0;
     uint16_t prev_main_frequency = 0;
     uint16_t curr_main_frequency = 0;
 
 	// TODO this should be dynamic memory so we can pass a ptr to get_peaks instead of
 	// an entire 3d array
-    float peak[harmonic_num][max_window_size*2];
+    float peak[peak_window];
 
     // find main frequency
     curr_main_frequency = find_main_freq(FFT_array);
@@ -29,11 +29,11 @@ void timbre_convert(float* FFT_array) {
     reconstruct(peak, FFT_array, main_index);
 }
 
-uint16_t find_main_freq(float * FFT_array){
+uint16_t find_main_freq(float FFT_array[]){
 	// Step 1: find the max value bin
 	int max_index = 0;
 	float max_value = 0;
-	int first_index = 0;
+	// int first_index = 0;
 
 	float bin_value;
 	for (int i = 0; i < process_size; i++) {
@@ -62,11 +62,11 @@ uint16_t find_main_freq(float * FFT_array){
     return freq;
 }
 
-void get_peaks(float peak[][max_window_size*2], uint16_t curr_main_frequency, uint16_t clip_counter) {
+void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter) {
     float ratio1 = 1;
     float ratio2 = 0;
-    const float (*left)[harmonic_num][max_window_size*2];
-    const float (*right)[harmonic_num][max_window_size*2];
+    const float (*left)[peak_window];
+    const float (*right)[peak_window];
 
     if (curr_main_frequency < A1_freq)
         left = right = A1_peaks;
@@ -93,27 +93,32 @@ void get_peaks(float peak[][max_window_size*2], uint16_t curr_main_frequency, ui
     } else
         left = right = A5_peaks;
 
-    
-    for(int j=0; j<harmonic_num; j++){
-        for(int k=0; k<max_window_size*2; k++){
+    uint16_t index = 0;
+    for(int i=0; i<harmonic_num; i++){
+        for(int j=0; j<window_size*2*(j+1); j++){
             if(left == right){
-                peak[j][k] = left[clip_counter][j][k];
+                peak[index] = left[clip_counter][index];
             }else{
-                peak[j][k] = ratio1 * left[clip_counter][j][k] + ratio2 * right[clip_counter][j][k];
+                peak[index] = ratio1 * left[clip_counter][index] + ratio2 * right[clip_counter][index]; 
             }
+            index++;
         }
     }
     
 }
 
-void reconstruct(float peak[][max_window_size*2], float* FFT_array, uint16_t main_index){
+void reconstruct(float peak[], float FFT_array[], uint16_t main_index){
     // clear the array for output
     for(uint16_t i=0; i<process_size; i++)
         FFT_array[i] = 0;
     
+    uint16_t index = 0;
+    uint16_t freq_idx = 0;
     for(uint16_t i=0; i<harmonic_num; i++){ // harmonic number
-        for(uint16_t j=0; j<half_window_size*2*i; j++){ // window size
-            FFT_array[(main_index - half_window_size)*(i+1) + j] = (peak[i][j]);
+        for(uint16_t j=0; j<window_size*(i+1); j++){ // window size
+            freq_idx = (main_index - half_window_size)*(i+1) + j;
+            FFT_array[2*(freq_idx-1)] = peak[index++];  // real part
+            FFT_array[2*freq_idx-1] = peak[index++];    // imag part
         }
     }
 }
