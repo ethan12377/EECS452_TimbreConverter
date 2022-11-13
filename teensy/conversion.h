@@ -20,10 +20,10 @@
 #define A4_freq 879
 #define A5_freq 1759
 
-void timbre_convert(float*, int);
+void timbre_convert(float*);
 
-uint16_t find_main_freq(float *, int);
-void get_peaks(double [][harmonic_num][max_window_size*2], uint16_t);
-void reconstruct(double [][harmonic_num][max_window_size*2], float*, uint16_t, uint16_t);
+uint16_t find_main_freq(float *);
+void get_peaks(float [][max_window_size*2], uint16_t, uint16_t);
+void reconstruct(float [][max_window_size*2], float*, uint16_t);
 
 #endif
