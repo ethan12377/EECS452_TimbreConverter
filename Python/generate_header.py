@@ -59,13 +59,12 @@ for i in range(num_clips):
     A5_peaks[i] = get_model(A5[i], A5_freq, harmonic_num)
 
 # Write the initial part of the header file
-max_window_size = 2*half_width*harmonic_num
+peak_window = 720 * 2;
 initial_header_text = \
     "#ifndef freq_h\n" + \
     "#define freq_h\n\n" + \
     "#define num_clips " + str(num_clips) + "\n" + \
-    "#define harmonic_num " + str(harmonic_num) + "\n" + \
-    "#define max_window_size " + str(max_window_size) + "\n\n"
+    "#define peak_window " + str(peak_window) + "\n\n"
 
 # Reset the file for appending
 file = open("freq.h", "w")
@@ -76,21 +75,30 @@ file.close()
 file = open("freq.h", "a")
 file.write(initial_header_text)
 
-peak_list = [A1_peaks, A2_peaks, A3_peaks, A4_peaks, A5_peaks]
+peak_list = np.array([A1_peaks, A2_peaks, A3_peaks, A4_peaks, A5_peaks])
 
-for peak_index in range(len(peak_list)):
-    file.write("const double A%d_peaks[num_clips][harmonic_num][max_window_size*2] = {\n" % (peak_index + 1))
+# Rewrite peaks in new format
+A1_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
+A2_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
+A3_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
+A4_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
+A5_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
+peak_list_new = np.array([A1_peaks_new, A2_peaks_new, A3_peaks_new, A4_peaks_new, A5_peaks_new])
+
+for clip in range(len(peak_list_new)):
+    for i in range(num_clips):
+        for j in range(harmonic_num):
+            for k in range((j + 1) * 20):
+                peak_list_new[clip][i][k] = peak_list[clip][i][j][k]
+
+for peak_index in range(len(peak_list_new)):
+    file.write("const float A%d_peaks[num_clips][peak_window] = {\n" % (peak_index + 1))
 
     for i in range(num_clips):
         file.write("{\n")
-        for j in range(harmonic_num):
-            file.write("{")
-            for k in range(max_window_size):
-                file.write(str(peak_list[peak_index][i][j][k].real) + "," + str(peak_list[peak_index][i][j][k].imag))
-                if k != max_window_size-1: file.write(",")
 
-            if j != harmonic_num-1: file.write("},\n")
-            else: file.write("}\n")
+        for j in range(peak_window):
+            file.write(str(peak_list_new[peak_index][i][j].real) + "," + str(peak_list_new[peak_index][i][j].imag))
 
         if i != num_clips-1: file.write("},\n")
         else: file.write("}\n")
