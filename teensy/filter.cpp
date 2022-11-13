@@ -66,7 +66,7 @@ void process(float *FFT_array){
 	// do FFT on 4096 samples
 	arm_cfft_f32(&arm_cfft_sR_f32_len4096, FFT_array, 0, 1);
 
-	timbre_convert(FFT_array);
+	timbre_convert(FFT_array, 2*FFT_SIZE);
 
 	// iFFT back to time
 	arm_cfft_f32(&arm_cfft_sR_f32_len4096, FFT_array, 1, 1); 
