@@ -99,6 +99,7 @@ for peak_index in range(len(peak_list_new)):
 
         for j in range(peak_window):
             file.write(str(peak_list_new[peak_index][i][j].real) + "," + str(peak_list_new[peak_index][i][j].imag))
+            if j != peak_window - 1: file.write(",")
 
         if i != num_clips-1: file.write("},\n")
         else: file.write("}\n")
