@@ -59,7 +59,7 @@ for i in range(num_clips):
     A5_peaks[i] = get_model(A5[i], A5_freq, harmonic_num)
 
 # Write the initial part of the header file
-peak_window = 720 * 2;
+peak_window = 720 * 2
 initial_header_text = \
     "#ifndef freq_h\n" + \
     "#define freq_h\n\n" + \
@@ -98,7 +98,7 @@ for peak_index in range(len(peak_list_new)):
         file.write("{\n")
 
         for j in range(peak_window):
-            file.write(str(peak_list_new[peak_index][i][j].real) + "," + str(peak_list_new[peak_index][i][j].imag))
+            file.write(str(float(peak_list_new[peak_index][i][j].real)) + "," + str(float(peak_list_new[peak_index][i][j].imag)))
             if j != peak_window - 1: file.write(",")
 
         if i != num_clips-1: file.write("},\n")
