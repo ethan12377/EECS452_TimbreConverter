@@ -1,4 +1,5 @@
 #include "conversion.h"
+#include <math.h>
 
 void timbre_convert(float FFT_array[]) {
     uint16_t clip_counter = 0;
@@ -33,13 +34,15 @@ uint16_t find_main_freq(float FFT_array[]){
 	// Step 1: find the max value bin
 	int max_index = 0;
 	float max_value = 0;
-	// int first_index = 0;
+	//int first_index = 0;
 
-	float bin_value;
-	for (int i = 0; i < process_size; i++) {
-		bin_value = FFT_array[i];
-		if (bin_value > max_value) {
-			max_value = bin_value;
+	float bin_value_real, bin_value_complex, bin_value_mag;
+	for (int i = 0; i < process_size; i+=2) {
+		bin_value_real = FFT_array[i];
+		bin_value_complex = FFT_array[i+1];
+		bin_value_mag = math.sqrt((math.pow(bin_value_real, 2) + math.pow(bin_value_complex, 2))
+		if (bin_value_mag > max_value) {
+			max_value = bin_value_mag;
 			max_index = i;
 		}
 	}
