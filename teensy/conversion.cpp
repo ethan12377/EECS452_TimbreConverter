@@ -97,9 +97,11 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
     for(int i=0; i<harmonic_num; i++){
         for(int j=0; j<window_size*2*(j+1); j++){
             if(left == right){
-                peak[index] = left[clip_counter][index];
+                peak[index] = pgm_read_float(*(left+clip_counter)+index);
+                // peak[index] = left[clip_counter][index];
             }else{
-                peak[index] = ratio1 * left[clip_counter][index] + ratio2 * right[clip_counter][index]; 
+                // peak[index] = ratio1 * left[clip_counter][index] + ratio2 * right[clip_counter][index]; 
+                peak[index] = ratio1 * pgm_read_float(*(left+clip_counter)+index) + ratio2 * pgm_read_float(*(right+clip_counter)+index);
             }
             index++;
         }
