@@ -12,7 +12,7 @@ void timbre_convert(float FFT_array[]) {
     // find main frequency
     curr_main_frequency = find_main_freq(FFT_array);
 
-    curr_main_frequency = 200;
+    curr_main_frequency = 3000;
 
     // pick the next clip if the main frequency is unchanged, other wise start
     // from 1st clip
@@ -25,14 +25,12 @@ void timbre_convert(float FFT_array[]) {
     // freqeuncy, stored in 3D array peak
     get_peaks(peak, curr_main_frequency, clip_counter);
 
-    cout << "get peaks finish" << endl;
-
     // shift the harmonics with regard to main frequency
-    uint16_t freq_per_sam = sample_rate / process_size;
-    uint16_t main_index = (uint16_t) (curr_main_frequency / freq_per_sam);
-    reconstruct(peak, FFT_array, main_index);
+    float freq_per_sam = (float)sample_rate / (process_size/2);
 
-    cout << "reconstruct finish" << endl;
+    uint16_t main_index = (uint16_t) (curr_main_frequency / freq_per_sam);
+
+    reconstruct(peak, FFT_array, main_index);
 }
 
 uint16_t find_main_freq(float FFT_array[]){
@@ -112,9 +110,6 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
             index++;
         }
     }
-
-    cout << peak[0] << endl;
-    
 }
 
 void reconstruct(float peak[], float FFT_array[], uint16_t main_index){
@@ -122,6 +117,9 @@ void reconstruct(float peak[], float FFT_array[], uint16_t main_index){
     for(uint16_t i=0; i<process_size; i++)
         FFT_array[i] = 0;
     
+    if (main_index < half_window_size)
+        main_index = half_window_size;
+
     uint16_t index = 0;
     uint16_t freq_idx = 0;
     for(uint16_t i=0; i<harmonic_num; i++){ // harmonic number

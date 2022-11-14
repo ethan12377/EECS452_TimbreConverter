@@ -25,7 +25,7 @@ void timbre_convert(float FFT_array[]) {
     get_peaks(peak, curr_main_frequency, clip_counter);
 
     // shift the harmonics with regard to main frequency
-    uint16_t freq_per_sam = sample_rate / process_size;
+    float freq_per_sam = (float)sample_rate / (process_size/2);
     uint16_t main_index = (uint16_t) (curr_main_frequency / freq_per_sam);
     reconstruct(peak, FFT_array, main_index);
 }
@@ -115,6 +115,9 @@ void reconstruct(float peak[], float FFT_array[], uint16_t main_index){
     // clear the array for output
     for(uint16_t i=0; i<process_size; i++)
         FFT_array[i] = 0;
+
+    if (main_index < half_window_size)
+        main_index = half_window_size;
     
     uint16_t index = 0;
     uint16_t freq_idx = 0;
