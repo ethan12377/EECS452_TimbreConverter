@@ -40,7 +40,7 @@ uint16_t find_main_freq(float FFT_array[]){
 	for (int i = 0; i < process_size; i+=2) {
 		bin_value_real = FFT_array[i];
 		bin_value_complex = FFT_array[i+1];
-		bin_value_mag = math.sqrt((math.pow(bin_value_real, 2) + math.pow(bin_value_complex, 2))
+		bin_value_mag = math.pow(bin_value_real, 2) + math.pow(bin_value_complex, 2
 		if (bin_value_mag > max_value) {
 			max_value = bin_value_mag;
 			max_index = i;
