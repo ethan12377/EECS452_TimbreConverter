@@ -73,23 +73,23 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
     if (curr_main_frequency < A1_freq)
         left = right = A1_peaks;
     else if (curr_main_frequency >= A1_freq && curr_main_frequency < A2_freq) {
-        ratio1 = (A2_freq - curr_main_frequency) / (A2_freq - A1_freq);
-        ratio2 = (curr_main_frequency - A1_freq) / (A2_freq - A1_freq);
+        ratio1 = (float)(A2_freq - curr_main_frequency) / (A2_freq - A1_freq);
+        ratio2 = (float)(curr_main_frequency - A1_freq) / (A2_freq - A1_freq);
         left = A1_peaks;
         right = A2_peaks;
     } else if (curr_main_frequency >= A2_freq && curr_main_frequency < A3_freq) {
-        ratio1 = (A3_freq - curr_main_frequency) / (A3_freq - A2_freq);
-        ratio2 = (curr_main_frequency - A2_freq) / (A3_freq - A2_freq);
+        ratio1 = (float)(A3_freq - curr_main_frequency) / (A3_freq - A2_freq);
+        ratio2 = (float)(curr_main_frequency - A2_freq) / (A3_freq - A2_freq);
         left = A2_peaks;
         right = A3_peaks;
     } else if (curr_main_frequency >= A3_freq && curr_main_frequency < A4_freq) {
-        ratio1 = (A4_freq - curr_main_frequency) / (A4_freq - A3_freq);
-        ratio2 = (curr_main_frequency - A3_freq) / (A4_freq - A3_freq);
+        ratio1 = (float)(A4_freq - curr_main_frequency) / (A4_freq - A3_freq);
+        ratio2 = (float)(curr_main_frequency - A3_freq) / (A4_freq - A3_freq);
         left = A3_peaks;
         right = A4_peaks;
     } else if (curr_main_frequency >= A4_freq && curr_main_frequency < A5_freq) {
-        ratio1 = (A5_freq - curr_main_frequency) / (A5_freq - A4_freq);
-        ratio2 = (curr_main_frequency - A4_freq) / (A5_freq - A4_freq);
+        ratio1 = (float)(A5_freq - curr_main_frequency) / (A5_freq - A4_freq);
+        ratio2 = (float)(curr_main_frequency - A4_freq) / (A5_freq - A4_freq);
         left = A4_peaks;
         right = A5_peaks;
     } else
@@ -97,7 +97,7 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
 
     uint16_t index = 0;
     for(int i=0; i<harmonic_num; i++){
-        for(int j=0; j<window_size*2*(j+1); j++){
+        for(int j=0; j<window_size*2*(i+1); j++){
             if(left == right){
                 peak[index] = *(*(left+clip_counter)+index);
                 // peak[index] = left[clip_counter][index];

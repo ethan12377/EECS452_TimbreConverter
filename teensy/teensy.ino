@@ -21,17 +21,11 @@ AudioConnection patchCord4(filter, 1, audioOutput, 1);
 AudioControlSGTL5000 audioShield;
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial);
-  printf("setup started\n"); fflush(stdout);
-
-  AudioMemory(12);
+  AudioMemory(32);
   // Enable the audio shield and set the output volume.
   audioShield.enable();
   audioShield.inputSelect(myInput);
   audioShield.volume(0.5);
-
-  printf("setup done\n"); fflush(stdout);
 }
 
 void loop(){
