@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include "freq.h"
+#include <iostream>
+
+using namespace std;
 
 /*
 #define num_clips 16
