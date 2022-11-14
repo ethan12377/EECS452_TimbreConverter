@@ -75,36 +75,25 @@ file.close()
 file = open("freq.h", "a")
 file.write(initial_header_text)
 
-peak_list = np.array([A1_peaks, A2_peaks, A3_peaks, A4_peaks, A5_peaks])
+peak_list = [A1_peaks, A2_peaks, A3_peaks, A4_peaks, A5_peaks]
 
-# Rewrite peaks in new format
-A1_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
-A2_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
-A3_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
-A4_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
-A5_peaks_new = np.zeros((num_clips, peak_window), dtype=np.complex_)
-peak_list_new = np.array([A1_peaks_new, A2_peaks_new, A3_peaks_new, A4_peaks_new, A5_peaks_new])
-
-for clip in range(len(peak_list_new)):
-    for i in range(num_clips):
-        for j in range(harmonic_num):
-            for k in range((j + 1) * 20):
-                peak_list_new[clip][i][k] = peak_list[clip][i][j][k]
-
-for peak_index in range(len(peak_list_new)):
+for peak_index in range(len(peak_list)):
     file.write("const float A%d_peaks[num_clips][peak_window] = {\n" % (peak_index + 1))
+
 
     for i in range(num_clips):
         file.write("{\n")
 
-        for j in range(peak_window):
-            file.write(str(float(peak_list_new[peak_index][i][j].real)) + "," + str(float(peak_list_new[peak_index][i][j].imag)))
-            if j != peak_window - 1: file.write(",")
+        for j in range(harmonic_num):
+            for k in range(20*(j+1)):
+                file.write(str(float(A1_peaks[i][j][k].real)) + "," + str(float(A1_peaks[i][j][k].imag)))
+                if j!=harmonic_num-1 or k!=20*(j+1)-1 : file.write(",")
+
 
         if i != num_clips-1: file.write("},\n")
         else: file.write("}\n")
 
-    file.write("};\n\n")
 
+    file.write("};\n\n")
 file.write("#endif")
 file.close()
