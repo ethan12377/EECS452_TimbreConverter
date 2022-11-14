@@ -34,19 +34,18 @@ uint16_t find_main_freq(float FFT_array[]){
 	// Step 1: find the max value bin
 	int max_index = 0;
 	float max_value = 0;
-	//int first_index = 0;
+	// int first_index = 0;
 
 	float bin_value_real, bin_value_complex, bin_value_mag;
 	for (int i = 0; i < process_size; i+=2) {
 		bin_value_real = FFT_array[i];
 		bin_value_complex = FFT_array[i+1];
-		bin_value_mag = math.pow(bin_value_real, 2) + math.pow(bin_value_complex, 2
+		bin_value_mag = pow(bin_value_real, 2) + pow(bin_value_complex, 2);
 		if (bin_value_mag > max_value) {
 			max_value = bin_value_mag;
 			max_index = i;
 		}
 	}
-
 	// This will calculate the first peak in the array rather than the largest
 	// float prev_bin_value, current_bin_value;
 	// for (int i = 1; i < length; i++) {
@@ -100,11 +99,11 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
     for(int i=0; i<harmonic_num; i++){
         for(int j=0; j<window_size*2*(j+1); j++){
             if(left == right){
-                peak[index] = pgm_read_float(*(left+clip_counter)+index);
+                peak[index] = *(*(left+clip_counter)+index);
                 // peak[index] = left[clip_counter][index];
             }else{
                 // peak[index] = ratio1 * left[clip_counter][index] + ratio2 * right[clip_counter][index]; 
-                peak[index] = ratio1 * pgm_read_float(*(left+clip_counter)+index) + ratio2 * pgm_read_float(*(right+clip_counter)+index);
+                peak[index] = ratio1 * *(*(left+clip_counter)+index) + ratio2 * *(*(right+clip_counter)+index);
             }
             index++;
         }
