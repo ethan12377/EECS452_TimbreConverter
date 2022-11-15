@@ -13,6 +13,8 @@ void timbre_convert(float FFT_array[]) {
     // find main frequency
     curr_main_frequency = find_main_freq(FFT_array);
 
+    curr_main_frequency = 500;
+
     // pick the next clip if the main frequency is unchanged, other wise start
     // from 1st clip
     clip_counter = curr_main_frequency == prev_main_frequency
