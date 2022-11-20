@@ -86,7 +86,7 @@ for peak_index in range(len(peak_list)):
 
         for j in range(harmonic_num):
             for k in range(20*(j+1)):
-                file.write(str(float(A1_peaks[i][j][k].real)) + "," + str(float(A1_peaks[i][j][k].imag)))
+                file.write(str(float(peak_list[peak_index][i][j][k].real)) + "," + str(float(peak_index[peak_list][i][j][k].imag)))
                 if j!=harmonic_num-1 or k!=20*(j+1)-1 : file.write(",")
 
 

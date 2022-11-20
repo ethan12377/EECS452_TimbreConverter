@@ -4,28 +4,20 @@
 uint16_t clip_counter = 0;
 uint16_t prev_main_frequency = 0;
 uint16_t curr_main_frequency = 0;
+uint8_t freq_lock = 0;
 
 void timbre_convert(float FFT_array[]) {
-	// TODO this should be dynamic memory so we can pass a ptr to get_peaks instead of
+	// this should be dynamic memory so we can pass a ptr to get_peaks instead of
 	// an entire 3d array
     float peak[peak_window];
 
-    // find main frequency
-    curr_main_frequency = find_main_freq(FFT_array);
-
-    if(curr_main_frequency <= 20){
-        curr_main_frequency = 20;
-    }
-    if(curr_main_frequency >= 10000){
-        curr_main_frequency = 10000;
-    }
-
     // pick the next clip if the main frequency is unchanged, other wise start
     // from 1st clip
+    while(freq_lock){}
+    freq_lock = 1;
     clip_counter = curr_main_frequency == prev_main_frequency
                        ? (clip_counter + 1) % num_clips
                        : 0;
-    prev_main_frequency = curr_main_frequency;
 
     // determins the 16 clips of peaks that gonna be used based on main
     // freqeuncy, stored in 3D array peak
@@ -35,40 +27,21 @@ void timbre_convert(float FFT_array[]) {
     float freq_per_sam = (float)sample_rate / (process_size/2);
     uint16_t main_index = (uint16_t) (curr_main_frequency / freq_per_sam);
     reconstruct(peak, FFT_array, main_index);
+    freq_lock = 0;
 }
 
-uint16_t find_main_freq(float FFT_array[]){
-	// Step 1: find the max value bin
-	int max_index = 0;
-	float max_value = 0;
-	// int first_index = 0;
-
-	float bin_value_real, bin_value_complex, bin_value_mag;
-	for (int i = 0; i < process_size; i+=2) {
-		bin_value_real = FFT_array[i];
-		bin_value_complex = FFT_array[i+1];
-		bin_value_mag = pow(bin_value_real, 2) + pow(bin_value_complex, 2);
-		if (bin_value_mag > max_value) {
-			max_value = bin_value_mag;
-			max_index = i;
-		}
-	}
-	// This will calculate the first peak in the array rather than the largest
-	// float prev_bin_value, current_bin_value;
-	// for (int i = 1; i < length; i++) {
-		// prev_bin_value = FFT_array[i-1];
-		// current_bin_value = FFT_array[i];
- 
-		// if (prev_bin_value > current_bin_value) {
-			// first_index = i - 1;
-		// }
-	// }
-
-	// Step 2: calculate freq based on bin and array size
-	uint16_t freq = (uint16_t) max_index * sample_rate / (float)process_size;
-
-	// Step 3: return freq
-    return freq;
+void update_freq(uint16_t new_main_freq){
+    if(!freq_lock){
+        freq_lock = 1;
+        prev_main_frequency = curr_main_frequency;
+        curr_main_frequency = new_main_freq;
+        if(curr_main_frequency <= 20){
+            curr_main_frequency = 20;
+        }
+        if(curr_main_frequency >= 10000){
+            curr_main_frequency = 10000;
+        }
+    }
 }
 
 void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter) {
@@ -111,7 +84,6 @@ void get_peaks(float peak[], uint16_t curr_main_frequency, uint16_t clip_counter
             }else{
                 // peak[index] = ratio1 * left[clip_counter][index] + ratio2 * right[clip_counter][index]; 
                 peak[index] = ratio1 * pgm_read_float(*(left+clip_counter)+index) + ratio2 * pgm_read_float(*(right+clip_counter)+index);            }
-            }
             index++;
         }
     }
@@ -124,7 +96,7 @@ void reconstruct(float peak[], float FFT_array[], uint16_t main_index){
         FFT_array[i] = 0;
 
     if (main_index < half_window_size)
-        main_index = half_window_size+1;
+        main_index = half_window_size + 1;
     
     uint16_t index = 0;
     uint16_t freq_idx = 0;

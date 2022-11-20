@@ -2,8 +2,9 @@
 #define conversion_h
 
 #include <stdint.h>
-#include <avr/pgmspace.h>
 #include "freq.h"
+#include <mutex>
+#include <avr/pgmspace.h>
 
 /*
 #define num_clips 16
@@ -18,10 +19,6 @@
 #define max_window_size 160
 #define harmonic_num 8
 
-uint16_t clip_counter = 0;
-uint16_t prev_main_frequency = 0;
-uint16_t curr_main_frequency = 0;
-
 #define A1_freq 109
 #define A2_freq 219
 #define A3_freq 439
@@ -29,8 +26,7 @@ uint16_t curr_main_frequency = 0;
 #define A5_freq 1759
 
 void timbre_convert(float[]);
-
-uint16_t find_main_freq(float[]);
+void update_freq(uint16_t);
 void get_peaks(float [], uint16_t, uint16_t);
 void reconstruct(float [], float[], uint16_t);
 
