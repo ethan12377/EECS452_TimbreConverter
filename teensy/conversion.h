@@ -18,10 +18,6 @@
 #define max_window_size 160
 #define harmonic_num 8
 
-uint16_t clip_counter = 0;
-uint16_t prev_main_frequency = 0;
-uint16_t curr_main_frequency = 0;
-
 #define A1_freq 109
 #define A2_freq 219
 #define A3_freq 439
