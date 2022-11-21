@@ -25,7 +25,7 @@
 
 void Filter::update(void){
 	audio_block_t *block, *b_new;
-	void process(float *); 
+	void process(float *, float *); 
 
 	block = receiveReadOnly();  // try to read a block of samples
 	if (!block) return;         // exit and try again if one is not available
@@ -55,14 +55,14 @@ void Filter::update(void){
 
 	if (++block_ctr < N_BLOCKS) return; // get next input block
 
-	process(FFT_array);
+	process(FFT_array, SAVE_array);
 
 	block_ctr = 0;  // reset block counter
 	return;         // and iterate again
 }
 
 
-void process(float *FFT_array){
+void process(float *FFT_array, float *SAVE_array){
 	// do FFT on 4096 samples
 	arm_cfft_f32(&arm_cfft_sR_f32_len4096, FFT_array, 0, 1);
 
@@ -71,6 +71,7 @@ void process(float *FFT_array){
 	// iFFT back to time
 	arm_cfft_f32(&arm_cfft_sR_f32_len4096, FFT_array, 1, 1); 
 
+	int16_t ctr;
 	// add in OVERLAP_SIZE values from save:
 	for (ctr = 0; ctr < OVERLAP_SIZE-1; ctr++) {
 		FFT_array[2 * ctr] = FFT_array[2 * ctr] + SAVE_array[ctr]; 
