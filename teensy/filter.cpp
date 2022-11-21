@@ -70,5 +70,16 @@ void process(float *FFT_array){
 
 	// iFFT back to time
 	arm_cfft_f32(&arm_cfft_sR_f32_len4096, FFT_array, 1, 1); 
+
+	// add in OVERLAP_SIZE values from save:
+	for (ctr = 0; ctr < OVERLAP_SIZE; ctr++) {
+		FFT_array[2 * ctr] = FFT_array[2 * ctr] + SAVE_array[ctr]; 
+		FFT_array[2 * ctr + 1] = 0;
+	}
+
+	// save OVERLAP_SIZE values;
+	for (ctr = 0; ctr < OVERLAP_SIZE; ctr++) {
+		SAVE_array[ctr] = FFT_array[2 * (ctr + (FFT_SIZE - (OVERLAP_SIZE - 1)))]; 
+	}
 }
 

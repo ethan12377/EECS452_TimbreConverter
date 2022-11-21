@@ -32,17 +32,23 @@
 #define FFT_SIZE 4096		// FFT size
 #define N_BLOCKS 32         // 32 x 128 = 4096
 #define PASS_THRU 0
+#define OVERLAP_SIZE  1024	// 4096/4=1024
 
 class Filter : public AudioStream
 {
 public:
 	Filter(void): AudioStream(1,inputQueueArray), block_ctr(0) {}
+	void begin() {
+		for (ctr = 0; ctr < OVERLAP_SIZE; ctr++) SAVE_array[ctr] = 0; // initialize SAVE_array
+	}
 	virtual void update(void);
 private:
 	audio_block_t *inputQueueArray[1];
 	float FFT_array[2 * FFT_SIZE];        // the FFT data array
 	float *ptr_FFT;         // point to a floats 
 	int16_t block_ctr;		// counts input block
+	float SAVE_array[OVERLAP_SIZE]; // the save array
+	int16_t ctr;
 };
 
 #endif

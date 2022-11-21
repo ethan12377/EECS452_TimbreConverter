@@ -28,6 +28,7 @@ void setup() {
   audioShield.enable();
   audioShield.inputSelect(myInput);
   audioShield.volume(0.5);
+  filter.begin();
 }
 
 void loop(){
