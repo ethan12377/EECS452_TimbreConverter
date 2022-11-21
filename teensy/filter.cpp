@@ -78,7 +78,7 @@ void process(float *FFT_array){
 	}
 
 	// save OVERLAP_SIZE values;
-	for (ctr = 0; ctr < OVERLAP_SIZE; ctr++) {
+	for (ctr = 0; ctr < OVERLAP_SIZE-1; ctr++) {
 		SAVE_array[ctr] = FFT_array[2 * (ctr + (FFT_SIZE - (OVERLAP_SIZE - 1)))]; 
 	}
 }
