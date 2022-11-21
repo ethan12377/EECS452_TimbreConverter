@@ -39,7 +39,7 @@ class Filter : public AudioStream
 public:
 	Filter(void): AudioStream(1,inputQueueArray), block_ctr(0) {}
 	void begin() {
-		for (ctr = 0; ctr < OVERLAP_SIZE; ctr++) SAVE_array[ctr] = 0; // initialize SAVE_array
+		for (ctr = 0; ctr < OVERLAP_SIZE-1; ctr++) SAVE_array[ctr] = 0; // initialize SAVE_array
 	}
 	virtual void update(void);
 private:
