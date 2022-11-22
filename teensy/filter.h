@@ -32,7 +32,7 @@
 #define FFT_SIZE 4096		// FFT size
 #define N_BLOCKS 32         // 32 x 128 = 4096
 #define PASS_THRU 0
-#define OVERLAP_SIZE  1024	// 4096/4=1024
+#define OVERLAP_SIZE  256	// 4096/4=1024
 
 class Filter : public AudioStream
 {
